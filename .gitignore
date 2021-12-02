@@ -1,0 +1,9 @@
+# mac file system
+.DS_Store
+
+# python files
+env/
+
+# video files
+*/videos/*
+*/output/*
