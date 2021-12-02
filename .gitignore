@@ -6,4 +6,6 @@ env/
 
 # video files
 */videos/*
+!*/videos/.gitkeep
 */output/*
+!*/output/.gitkeep
