@@ -3,6 +3,7 @@
 
 # python files
 env/
+__pycache__/
 
 # video files
 */videos/*

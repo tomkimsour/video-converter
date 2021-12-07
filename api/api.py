@@ -13,8 +13,6 @@ app.config['UPLOAD_EXTENSIONS'] = ['.mp4', '.mkv', '.mov','.webm','.wmv','.avi',
 app.config['UPLOAD_PATH'] = 'output'
 api = Api(app)
 
-# video_send_args = reqparse.RequestParser()
-# video_send_args.add_argument('video')
 
 class VideoConverter(Resource):
     def post(self):
@@ -25,7 +23,7 @@ class VideoConverter(Resource):
                 file_ext = os.path.splitext(filename)[1]
                 if file_ext not in app.config['UPLOAD_EXTENSIONS']:
                     return 400
-                print(uploaded_file.filename)
+                
                 uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
         return {'task':'File sent'},201
 
