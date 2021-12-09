@@ -25,6 +25,8 @@ class VideoConverter(Resource):
                     return 400
                 
                 uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+            else:
+                return 400
         return {'task':'File sent'},201
 
 api.add_resource(VideoConverter, '/upload')
