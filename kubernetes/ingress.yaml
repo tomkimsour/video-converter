@@ -4,12 +4,13 @@ metadata:
   name: video-converter-ingress
 spec:
   rules:
-  - http:
+  - host: video-converter.com
+    http:
       paths:
-      - path: /testpath
+      - path: /
         pathType: Prefix
         backend:
           service:
             name: flask-api-service
             port:
-              number: 5100
+              number: 5000
