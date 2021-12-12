@@ -14,22 +14,28 @@ app.config['UPLOAD_PATH'] = 'output'
 api = Api(app)
 
 
+class HomePage(Resource):
+    def get(self):
+        return {"text": "welcome"},200
+
 class VideoConverter(Resource):
     def post(self):
+        print(request)
         for uploaded_file in request.files.getlist('file'):
+            print(uploaded_file)
             if uploaded_file.filename != '':
                 # sanitize file name
                 filename = secure_filename(uploaded_file.filename)
                 file_ext = os.path.splitext(filename)[1]
                 if file_ext not in app.config['UPLOAD_EXTENSIONS']:
                     return 400
-                
+                print("received file :", filename)
                 uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
             else:
                 return 400
         return {'task':'File sent'},201
 
 api.add_resource(VideoConverter, '/upload')
-
+api.add_resource(HomePage, '/')
 if __name__ == '__main__':
     app.run(debug=True)

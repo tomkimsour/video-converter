@@ -1,6 +1,6 @@
 FROM python:3
 ENV FLASK_APP=api.py
-EXPOSE 5100
+EXPOSE 5000
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
