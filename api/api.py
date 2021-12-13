@@ -38,6 +38,8 @@ class VideoConverter(Resource):
                     return 400
                 print("received file :", filename)
                 uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+            else:
+                return 400
         return {'task':'file sent'},201
 
 class Test(Resource):
@@ -59,11 +61,8 @@ class Test(Resource):
 # TODO: set up endpoint for setting status
 
 api.add_resource(VideoConverter, '/upload')
-<<<<<<< HEAD
 api.add_resource(Test, '/test')
-
-=======
 api.add_resource(HomePage, '/')
->>>>>>> fdae99baf625b653391fbb52a169e4bc2d88ec1a
+
 if __name__ == '__main__':
     app.run(debug=True)
