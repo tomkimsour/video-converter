@@ -8,7 +8,10 @@ eval $(minikube docker-env)
 kubectl apply -f kubernetes/cluster-operator.yml
 kubectl apply -f kubernetes/rabbitmqcluster.yaml
 
-# create docker file
+# enable ingress
+minikube addons enable ingress
+
+# create docker file  
 docker build --tag flask-api ./api
 docker build --tag converter ./encoder
 
