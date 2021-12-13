@@ -20,27 +20,13 @@ spec:
         imagePullPolicy: Never
         ports:
           - containerPort: 5000
-<<<<<<< HEAD
-=======
-        volumeMounts:
-          - name: local
-            mountPath: /
-    volume:
-    - name: local
-      hostpath:
-        path: /
->>>>>>> fdae99baf625b653391fbb52a169e4bc2d88ec1a
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: flask-api-service
 spec:
-<<<<<<< HEAD
   type: NodePort
-=======
-  type: ClusterIP
->>>>>>> fdae99baf625b653391fbb52a169e4bc2d88ec1a
   selector:
     app: flask-api
   ports:
