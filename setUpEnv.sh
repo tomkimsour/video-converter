@@ -1,11 +1,17 @@
-# setup environment viriables docker
-eval $(minikube docker-env)
-
 # starts cluster
 minikube start
 
-# create docker file  
+# setup environment variables docker
+eval $(minikube docker-env)
+
+# set up rabbitMQ operator
+kubectl apply -f kubernetes/cluster-operator.yml
+kubectl apply -f kubernetes/rabbitmqcluster.yaml
+
+# create docker file
 docker build --tag flask-api ./api
+docker build --tag converter ./encoder
 
 # push the container in the cluster
-kubectl create -f api/api-deployment.yaml
+kubectl create -f kubernetes/api-deployment.yaml
+kubectl create -f kubernetes/converter-deployment.yaml
