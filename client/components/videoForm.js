@@ -20,14 +20,11 @@ export default class VideoForm extends Component {
       method: 'POST',
       mode: 'no-cors',
       body: formData,
-      redirect: 'follow'
     };
     const res = await fetch(this.apiUrl, requestOptions)
-    .then(response => response.text())
-    .then(result => console.log(result))
+    .then(response => response.json())
     .catch(error => console.log('error', error));
-    const data = await res;
-    console.log(data)
+    console.log(res)
   };
 
 	fileData = () => {
@@ -59,7 +56,7 @@ export default class VideoForm extends Component {
           <button onClick={this.onFileUpload}>
           Upload!
           </button>
-        <p>{this.fileData()}</p>
+        {this.fileData()}
         </div>
       </div>
     );

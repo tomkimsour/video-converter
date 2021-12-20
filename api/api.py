@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify, make_response
 from flask_restful import Resource, Api
 from flask_restful import reqparse
 import os
@@ -20,7 +20,6 @@ class HomePage(Resource):
 
 class VideoConverter(Resource):
     def post(self):
-        print(request)
         for uploaded_file in request.files.getlist('file'):
             print(uploaded_file)
             if uploaded_file.filename != '':
@@ -33,7 +32,8 @@ class VideoConverter(Resource):
                 uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
             else:
                 return 400
-        return {'task':'File sent'},201
+        res = make_response(jsonify({'task':'File sent'}),201)
+        return res
 
 api.add_resource(VideoConverter, '/upload')
 api.add_resource(HomePage, '/')
