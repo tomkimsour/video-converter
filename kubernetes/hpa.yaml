@@ -1,0 +1,24 @@
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: converter-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: converter-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Object
+    object:
+      metric:
+        name: rabbitmq_queue_messages
+      describedObject:
+        apiVersion: "/v1"
+        kind: Service
+        name: production-rabbitmqcluster
+      target:
+        type: Value
+        value: 10

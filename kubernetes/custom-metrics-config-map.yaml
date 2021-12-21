@@ -1,0 +1,10 @@
+rules:
+  custom:
+  - seriesQuery: 'rabbitmq_queue_messages{kubernetes_name!="",kubernetes_namespace!=""}'
+    resources:
+      overrides:
+        kubernetes_namespace: {resource: "namespace"}
+        kubernetes_name: {resource: "service"}
+    metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>,queue="task_queue"}) by (<<.GroupBy>>)
+prometheus:
+  url: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local

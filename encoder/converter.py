@@ -34,7 +34,7 @@ def convert(in_filename:str, out_filename:str):
         sys.exit(1)
 
 if __name__ == '__main__':
-    convert('test.webm', 'testout.webm')
+    # convert('test.webm', 'testout.webm')
 
     try:
         main()
