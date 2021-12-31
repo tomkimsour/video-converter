@@ -6,6 +6,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "axios": "^0.24.0",
+    "fs": "^0.0.1-security",
     "gray-matter": "^4.0.3",
     "next": "latest",
     "postcss-flexbugs-fixes": "^5.0.2",

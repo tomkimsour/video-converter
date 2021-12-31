@@ -1,11 +1,13 @@
 import React,{Component} from 'react';
+import axios from 'axios'
+// import fs from 'fs'
 
 export default class VideoForm extends Component {
 	state = {
 	  selectedFile: null
 	};
 
-  apiUrl = "http://localhost:5100/upload"
+  apiUrl = "http://35.228.87.238:5000/upload"
 	
 	onFileChange = event => { this.setState({ selectedFile: event.target.files[0] });};
 	
@@ -16,15 +18,23 @@ export default class VideoForm extends Component {
       this.state.selectedFile,
       this.state.selectedFile.name
     );
-    var requestOptions = {
-      method: 'POST',
-      mode: 'no-cors',
-      body: formData,
+      
+    var config = {
+      method: 'post',
+      url: 'http://35.228.87.238:5000/upload',
+      headers: { 
+        "Content-Type": "multipart/form-data"
+      },
+      data : formData
     };
-    const res = await fetch(this.apiUrl, requestOptions)
-    .then(response => response.json())
-    .catch(error => console.log('error', error));
-    console.log(res)
+
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })  
+    .catch(function (error) {
+      console.log(error);
+    });
   };
 
 	fileData = () => {

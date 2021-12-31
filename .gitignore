@@ -10,3 +10,6 @@ __pycache__/
 !*/videos/.gitkeep
 */output/*
 !*/output/.gitkeep
+
+*.webm
+*.mp4
