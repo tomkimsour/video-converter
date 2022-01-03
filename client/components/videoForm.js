@@ -7,7 +7,7 @@ export default class VideoForm extends Component {
 	  selectedFile: null
 	};
 
-  apiUrl = "http://35.228.87.238:5000/upload"
+  apiUrl = "http://35.228.143.25:5000/upload"
 	
 	onFileChange = event => { this.setState({ selectedFile: event.target.files[0] });};
 	
@@ -21,7 +21,7 @@ export default class VideoForm extends Component {
       
     var config = {
       method: 'post',
-      url: 'http://35.228.87.238:5000/upload',
+      url: 'http://35.228.143.25:5000/upload',
       headers: { 
         "Content-Type": "multipart/form-data"
       },
@@ -62,7 +62,7 @@ export default class VideoForm extends Component {
     return (
       <div>
         <div className="flex-col justify-center ">
-          <input type="file" id="fileToConvert" name="fileToConvert" accept=".mp4, .mov" onChange={this.onFileChange} />
+          <input type="file" id="fileToConvert" name="fileToConvert" accept=".mp4, .mov, .webm" onChange={this.onFileChange} />
           <button onClick={this.onFileUpload}>
           Upload!
           </button>

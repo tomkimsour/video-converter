@@ -15,5 +15,5 @@ spec:
         app: converter
     spec:
       containers:
-      - image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/converter:v1
+      - image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/converter:v4
         name: converter

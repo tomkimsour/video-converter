@@ -15,7 +15,7 @@ spec:
         app: flask-api
     spec:
       containers:
-      - image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/flask-api:v2
+      - image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/flask-api:v7
         name: flask-api
         ports:
           - containerPort: 5000
