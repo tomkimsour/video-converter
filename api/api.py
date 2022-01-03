@@ -6,7 +6,7 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 from google.cloud import storage
-# import pika
+import pika
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -21,11 +21,11 @@ app.config['UPLOAD_PATH'] = 'output'
 api = Api(app)
 
 # rabbitMQ setup
-# credentials = pika.PlainCredentials('guest', 'guest')
-# connection = pika.BlockingConnection(pika.ConnectionParameters(os.environ['PRODUCTION_RABBITMQCLUSTER_SERVICE_HOST'], credentials=credentials))
-# channel = connection.channel()
-# channel.queue_declare(queue='task_queue', durable=True)
-# connection.close()
+credentials = pika.PlainCredentials('guest', 'guest')
+connection = pika.BlockingConnection(pika.ConnectionParameters(os.environ['PRODUCTION_RABBITMQCLUSTER_SERVICE_HOST'], credentials=credentials))
+channel = connection.channel()
+channel.queue_declare(queue='task_queue', durable=True)
+connection.close()
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']='august-tesla-333012-9c128488d3c3.json'
 

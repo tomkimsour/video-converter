@@ -15,9 +15,8 @@ spec:
         app: flask-api
     spec:
       containers:
-      - image: flask-api
+      - image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/flask-api:v2
         name: flask-api
-        imagePullPolicy: Never
         ports:
           - containerPort: 5000
 ---
@@ -26,7 +25,7 @@ kind: Service
 metadata:
   name: flask-api-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: flask-api
   ports:
