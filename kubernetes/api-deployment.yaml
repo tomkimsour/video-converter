@@ -2,31 +2,29 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flask-api-deployment
-  labels:
-    app: flask-api
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: flask-api
+  replicas: 1
   template:
     metadata:
       labels:
         app: flask-api
     spec:
       containers:
-      - image: flask-api
-        name: flask-api
-        imagePullPolicy: Never
+      - name: flask-api
+        image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/flask-api:v3 
         ports:
-          - containerPort: 5000
+        - containerPort: 80
+          name: api-port
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: flask-api-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: flask-api
   ports:

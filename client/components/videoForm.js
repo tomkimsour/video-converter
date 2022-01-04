@@ -7,7 +7,7 @@ export default class VideoForm extends Component {
 	  selectedFile: null
 	};
 
-  apiUrl = "http://35.228.87.238:5000/upload"
+  apiUrl = "http://35.228.143.25:5000/upload"
 	
 	onFileChange = event => { this.setState({ selectedFile: event.target.files[0] });};
 	
