@@ -1,7 +1,8 @@
 import ffmpeg
 import sys
 import pika, os
-import time
+import datetime
+import requests
 from google.cloud import storage
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']='august-tesla-333012-9c128488d3c3.json'
@@ -15,14 +16,22 @@ def main():
 
     def callback(ch, method, properties, body):
         body = body.decode('utf-8')
-        print("Downloading blob")
-        download_blob("video-bucket-storage", body, body)
-        print("Downloaded blob, starting conversion")
-        convert(body, body + "_converted")
-        print("Conversion finished, uploading converted file")
-        upload_blob("video-bucket-storage", body + "_converted.webm", body + "_converted")
+        bucket_name = "video-bucket-storage"
+        url = 'http://35.228.143.25:5000/status'
 
-        print(" [x] Done")
+        requests.post(url, data = {"status": "Downloading from GCS", "id": body})
+        download_blob(bucket_name, body, body)
+
+        requests.post(url, data = {"status": "Converting", "id": body})
+        convert(body, "converted_" + body)
+
+        requests.post(url, data = {"status": "Uploading converted video", "id": body})
+        upload_blob(bucket_name, "converted_" + body, "converted_" + body)
+
+        requests.post(url, data = {"status": "Generating URL", "id": body})
+        signed_url = generate_download_signed_url_v4(bucket_name, "converted_" + body)
+
+        requests.post(url, data = {"status": signed_url, "id": body})
         ch.basic_ack(delivery_tag = method.delivery_tag)
 
     channel.basic_qos(prefetch_count=1)
@@ -35,7 +44,7 @@ def convert(in_filename:str, out_filename:str):
     try:
         stream = ffmpeg.input(in_filename)
         stream = ffmpeg.hflip(stream)
-        stream = ffmpeg.output(stream, out_filename + ".webm") # NOTE: THIS IS HARD CODED
+        stream = ffmpeg.output(stream, out_filename)
         ffmpeg.run(stream)
     except ffmpeg.Error as e:
         print(e.stderr, file=sys.stderr)
@@ -67,9 +76,22 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
         )
     )
 
-if __name__ == '__main__':
-    # convert('test.webm', 'testout.webm')
+def generate_download_signed_url_v4(bucket_name, blob_name):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
 
+    url = blob.generate_signed_url(
+        version="v4",
+        # This URL is valid for 15 minutes
+        expiration=datetime.timedelta(minutes=15),
+        # Allow GET requests using this URL.
+        method="GET",
+    )
+
+    return url
+
+if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:

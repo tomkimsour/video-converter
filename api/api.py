@@ -4,6 +4,7 @@ from flask_restful import reqparse
 from flask_cors import CORS, cross_origin
 import os
 import uuid
+import requests
 from werkzeug.utils import secure_filename
 from google.cloud import storage
 import pika
@@ -29,6 +30,7 @@ connection.close()
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']='august-tesla-333012-9c128488d3c3.json'
 
+clients = {}
 
 def upload_blob(blob_name, file_path, bucket_name):
     try:
@@ -72,23 +74,34 @@ class VideoConverter(Resource):
                 if file_ext not in app.config['UPLOAD_EXTENSIONS']:
                     return 400
                 
-                #creates the file localy
+                #creates the file locally
                 path = os.path.join(app.config['UPLOAD_PATH'], filename)
                 uploaded_file.save(path)
                 # writes the file in a bucket
                 file_id = str(uuid.uuid4())
                 bucket_name = "video-bucket-storage"
-                if upload_blob(file_id,path,bucket_name):
-                    createQueueTask(file_id)
+                if upload_blob(file_id + file_ext,path,bucket_name):
+                    clients[file_id + file_ext] = {
+                        "status": "Uploaded",
+                        "status_url": f"http://35.228.143.25:5000/status/{file_id + file_ext}"
+                    }
+
+                    createQueueTask(file_id + file_ext)
                     os.remove(path)
-                return {'task':'file sent'},201
+                return clients,201
             else:
                 return 400
 
+class SetStatus(Resource):
+    def post(self):
+        clients[request.form['id']]['status'] = request.form['status']
 
+class GetStatus(Resource):
+    def get(self, id):
+        return clients[id]
 
-# TODO: set up endpoint for setting status
-
+api.add_resource(SetStatus, '/status')
+api.add_resource(GetStatus, '/status/<id>')
 api.add_resource(VideoConverter, '/upload')
 api.add_resource(HomePage, '/')
 
