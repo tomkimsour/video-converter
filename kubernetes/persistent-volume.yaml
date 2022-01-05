@@ -2,21 +2,14 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: video-pv
+  labels:
+    type: gcePersistentDisk
 spec:
   capacity:
     storage: 10Gi
-  volumeMode: Filesystem
   accessModes:
-  - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  storageClassName: local-storage
-  local:
-    path: /mnt/disks/ssd1
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - example-node
+  - ReadWriteMany
+  nfs:
+    name: video-storage
+    path: 10.216.28.202
+

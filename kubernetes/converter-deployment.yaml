@@ -15,6 +15,5 @@ spec:
         app: converter
     spec:
       containers:
-      - image: converter
+      - image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/converter:v5
         name: converter
-        imagePullPolicy: Never

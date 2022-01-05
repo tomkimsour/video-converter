@@ -21,7 +21,7 @@ export default class VideoForm extends Component {
       
     var config = {
       method: 'post',
-      url: 'http://35.228.87.238:5000/upload',
+      url: 'http://35.228.143.25:5000/upload',
       headers: { 
         "Content-Type": "multipart/form-data"
       },
@@ -37,36 +37,14 @@ export default class VideoForm extends Component {
     });
   };
 
-	fileData = () => {
-    if (this.state.selectedFile) {
-      return (
-      <div>
-        <h2>File Details:</h2>
-        <ul>
-          <li>File Name: {this.state.selectedFile.name} </li>
-          <li>File Type: {this.state.selectedFile.type}</li>			
-        </ul>
-      </div>
-      );
-    } else {
-      return (
-      <div>
-        <br />
-        <h4>Please select a file to convert</h4>
-      </div>
-      );
-    }
-	};
-	
 	render() {
     return (
       <div>
-        <div className="flex-col justify-center ">
-          <input type="file" id="fileToConvert" name="fileToConvert" accept=".mp4, .mov" onChange={this.onFileChange} />
+        <div className="columns-3">
+          <input type="file" id="fileToConvert" name="fileToConvert" accept=".mp4, .mov, .webm" onChange={this.onFileChange} />
           <button onClick={this.onFileUpload}>
           Upload!
           </button>
-        {this.fileData()}
         </div>
       </div>
     );

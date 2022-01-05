@@ -10,7 +10,7 @@ export default function Home({ allPostsData }) {
         <title>{siteTitle}</title>
       </Head>
       <h1>Video converter</h1>
-    <VideoForm/>
+      <VideoForm/>
     </>
   )
 }
