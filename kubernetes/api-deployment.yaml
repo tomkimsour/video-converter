@@ -2,13 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flask-api-deployment
-  labels:
-    app: flask-api
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: flask-api
+  replicas: 1
   template:
     metadata:
       labels:
@@ -18,7 +16,8 @@ spec:
       - image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/flask-api:v25
         name: flask-api
         ports:
-          - containerPort: 5000
+        - containerPort: 80
+          name: api-port
 ---
 apiVersion: v1
 kind: Service
