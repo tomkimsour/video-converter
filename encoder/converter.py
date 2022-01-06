@@ -19,7 +19,7 @@ def main():
     def callback(ch, method, properties, body, args):
         body = body.decode('utf-8')
         bucket_name = "video-bucket-storage"
-        url = 'http://35.228.143.25:5000/status'
+        url = 'http://192.168.49.2:30667/status'
         conn = args
         delivery_tag = method.delivery_tag
         t1 = threading.Thread(target=convert_worker, args=(conn, ch, delivery_tag, body, "converted_" + body, url, bucket_name, body))

@@ -9,7 +9,7 @@ export default function VideoForm(){
   const numberCopy = React.useRef(null)
   const delayQueuing = React.useRef(null)
 
-  const apiUrl = "http://35.228.143.25:5000/upload"
+  const apiUrl = "http://192.168.49.2:30667/upload"
 	
 	const onFileChange = event => selectedFile.current = event.target.files;
 
