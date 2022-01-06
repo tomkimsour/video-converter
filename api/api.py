@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, request, jsonify, make_response
 from flask_restful import Resource, Api
 from flask_restful import reqparse
@@ -8,6 +9,7 @@ import requests
 from werkzeug.utils import secure_filename
 from google.cloud import storage
 import pika
+import json
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -83,7 +85,9 @@ class VideoConverter(Resource):
                 if upload_blob(file_id + file_ext,path,bucket_name):
                     clients[file_id + file_ext] = {
                         "status": "Uploaded",
-                        "status_url": f"http://35.228.143.25:5000/status/{file_id + file_ext}"
+                        "status_id": 0,
+                        "status_url": f"http://192.168.49.2:30667/status/{file_id + file_ext}",
+                        "elapsed_time": str(datetime.now())
                     }
 
                     createQueueTask(file_id + file_ext)
@@ -95,15 +99,24 @@ class VideoConverter(Resource):
 class SetStatus(Resource):
     def post(self):
         clients[request.form['id']]['status'] = request.form['status']
+        clients[request.form['id']]['status_id'] = request.form['status_id']
+
+        if (clients[request.form['id']]['status_id'] == "5"): # finished stage
+            clients[request.form['id']]['elapsed_time'] = (datetime.now() - datetime.fromisoformat(clients[request.form['id']]['elapsed_time'])).total_seconds()
 
 class GetStatus(Resource):
     def get(self, id):
         return clients[id]
 
+class Metrics(Resource):
+    def get(self):
+        return clients
+
 api.add_resource(SetStatus, '/status')
 api.add_resource(GetStatus, '/status/<id>')
 api.add_resource(VideoConverter, '/upload')
 api.add_resource(HomePage, '/')
+api.add_resource(Metrics, '/metrics')
 
 if __name__ == '__main__':
     app.run(debug=True)

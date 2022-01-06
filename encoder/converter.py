@@ -3,6 +3,8 @@ import sys
 import pika, os
 import datetime
 import requests
+import threading
+import functools
 from google.cloud import storage
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']='august-tesla-333012-9c128488d3c3.json'
@@ -14,38 +16,50 @@ def main():
 
     channel.queue_declare(queue='task_queue', durable=True)
 
-    def callback(ch, method, properties, body):
+    def callback(ch, method, properties, body, args):
         body = body.decode('utf-8')
         bucket_name = "video-bucket-storage"
         url = 'http://35.228.143.25:5000/status'
+        conn = args
+        delivery_tag = method.delivery_tag
+        t1 = threading.Thread(target=convert_worker, args=(conn, ch, delivery_tag, body, "converted_" + body, url, bucket_name, body))
+        t1.start()
 
-        requests.post(url, data = {"status": "Downloading from GCS", "id": body})
-        download_blob(bucket_name, body, body)
-
-        requests.post(url, data = {"status": "Converting", "id": body})
-        convert(body, "converted_" + body)
-
-        requests.post(url, data = {"status": "Uploading converted video", "id": body})
-        upload_blob(bucket_name, "converted_" + body, "converted_" + body)
-
-        requests.post(url, data = {"status": "Generating URL", "id": body})
-        signed_url = generate_download_signed_url_v4(bucket_name, "converted_" + body)
-
-        requests.post(url, data = {"status": signed_url, "id": body})
-        ch.basic_ack(delivery_tag = method.delivery_tag)
+    on_callback = functools.partial(callback, args=(connection))
 
     channel.basic_qos(prefetch_count=1)
-    channel.basic_consume(queue='task_queue', on_message_callback=callback)
+    channel.basic_consume(queue='task_queue', on_message_callback=on_callback)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
 
+def convert_worker(conn, ch, delivery_tag, in_filename:str, out_filename:str, url, bucket_name, body):
+    requests.post(url, data = {"status": "Downloading from GCS", "status_id": 1, "id": body})
+    download_blob(bucket_name, body, body)
+
+    requests.post(url, data = {"status": "Converting", "status_id": 2, "id": body})
+    out_filename = convert(body, "converted_" + body)
+
+    requests.post(url, data = {"status": "Uploading converted video", "status_id": 3, "id": body})
+    upload_blob(bucket_name, out_filename, out_filename)
+
+    requests.post(url, data = {"status": "Generating URL", "status_id": 4, "id": body})
+    signed_url = generate_download_signed_url_v4(bucket_name, out_filename)
+
+    requests.post(url, data = {"status": signed_url, "status_id": 5, "id": body})
+
+    cb = functools.partial(ack_message, ch, delivery_tag)
+    conn.add_callback_threadsafe(cb)
+
 def convert(in_filename:str, out_filename:str):
+    out_filename = "converted_" + out_filename + ".mkv"
+    
     try:
         stream = ffmpeg.input(in_filename)
-        stream = ffmpeg.hflip(stream)
         stream = ffmpeg.output(stream, out_filename)
         ffmpeg.run(stream)
+
+        return out_filename
     except ffmpeg.Error as e:
         print(e.stderr, file=sys.stderr)
         sys.exit(1)
@@ -90,6 +104,17 @@ def generate_download_signed_url_v4(bucket_name, blob_name):
     )
 
     return url
+
+def ack_message(ch, delivery_tag):
+    """Note that `ch` must be the same pika channel instance via which
+    the message being ACKed was retrieved (AMQP protocol constraint).
+    """
+    if ch.is_open:
+        ch.basic_ack(delivery_tag)
+    else:
+        # Channel is already closed, so we can't ACK this message;
+        # log and/or do something that makes sense for your app in this case.
+        pass
 
 if __name__ == '__main__':
     try:
