@@ -14,6 +14,7 @@ spec:
     spec:
       containers:
       - image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/flask-api:v25
+        imagePullPolicy: Never
         name: flask-api
         ports:
         - containerPort: 80
