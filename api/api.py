@@ -103,6 +103,7 @@ class SetStatus(Resource):
 
         if (clients[request.form['id']]['status_id'] == "5"): # finished stage
             clients[request.form['id']]['elapsed_time'] = (datetime.now() - datetime.fromisoformat(clients[request.form['id']]['elapsed_time'])).total_seconds()
+            # TODO: REMOVE ORIGINAL VIDEO FROM STORAGE
 
 class GetStatus(Resource):
     def get(self, id):

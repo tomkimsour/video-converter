@@ -8,11 +8,15 @@ export default function VideoForm(){
   const numberCopy = useRef(1)
   const delayQueuing = useRef(1000)
 
+<<<<<<< HEAD
   const [videoStatusList, setVideoStatusList] = useState([]);
 
   const apiUrl = "http://34.88.103.252:5000/upload"
 
   let config = {}
+=======
+  const apiUrl = "http://192.168.49.2:30667/upload"
+>>>>>>> 771fd7fbf274ce6b015c551dfc5ce7eb975c75cb
 	
 	const onFileChange = event => selectedFile.current = event.target.files[0];
 
