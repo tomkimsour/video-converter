@@ -8,12 +8,13 @@ eval $(minikube docker-env)
 kubectl apply -f kubernetes/cluster-operator.yml
 kubectl apply -f kubernetes/rabbitmqcluster.yaml
 
-# enable ingress
-minikube addons enable ingress
+export PROJECT_ID=august-tesla-333012
+export CLUSTER_NAME=video-converter-cluster-1
+export REGION=europe-north1
 
 # create docker file  
-docker build --tag flask-api ./api
-docker build --tag converter ./encoder
+docker build -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/video-api/flask-api:v25 ./api
+docker build -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/video-api/converter:v25 ./encoder
 
 # push the container in the cluster
 kubectl create -f kubernetes/api-deployment.yaml
