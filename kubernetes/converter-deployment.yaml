@@ -15,6 +15,10 @@ spec:
         app: converter
     spec:
       containers:
-      - image: converter
-        name: converter
-        imagePullPolicy: Never
+      - name: converter
+        image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/converter:v65
+        resources:
+          requests:
+            cpu: "200m"
+          limits:
+            cpu: "400m"

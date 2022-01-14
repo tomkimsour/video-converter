@@ -12,11 +12,15 @@ spec:
         app: flask-api
     spec:
       containers:
-      - image: flask-api
+      - image: europe-north1-docker.pkg.dev/august-tesla-333012/video-api/flask-api:v61
         name: flask-api
-        imagePullPolicy: Never
         ports:
           - containerPort: 5000
+        resources:
+            requests:
+              cpu: "150m"
+            limits:
+              cpu: "300m"
 ---
 apiVersion: v1
 kind: Service

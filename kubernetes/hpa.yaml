@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: converter-deployment
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 15
   metrics:
   - type: Object
     object:
@@ -21,4 +21,4 @@ spec:
         name: production-rabbitmqcluster
       target:
         type: Value
-        value: 10
+        value: 5
