@@ -45,7 +45,7 @@ export default function VideoStatus(props){
     return (
         <li>
             {!isFinished ?(
-                <p>{status}</p>
+                <p>{props.number} - {status}</p>
                 
             ):(
                 <a href={status} target="_blank">Download Link</a>

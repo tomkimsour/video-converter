@@ -4,19 +4,15 @@ import VideoStatus from './videoStatus';
 export default function VideoForm(){
 
   const selectedFile = useRef(null)
-  const formatTo = useRef("mp4")
+  const formatTo = useRef("")
   const numberCopy = useRef(1)
   const delayQueuing = useRef(1000)
 
-<<<<<<< HEAD
   const [videoStatusList, setVideoStatusList] = useState([]);
 
   const apiUrl = "http://34.88.103.252:5000/upload"
 
   let config = {}
-=======
-  const apiUrl = "http://192.168.49.2:30667/upload"
->>>>>>> 771fd7fbf274ce6b015c551dfc5ce7eb975c75cb
 	
 	const onFileChange = event => selectedFile.current = event.target.files[0];
 
@@ -103,7 +99,7 @@ return (
     </div>
     <hr/>
     <ul>
-    {videoStatusList.map(data=> <VideoStatus key={data[0]} config={data[1]} delay={data[2]}/>)}
+    {videoStatusList.map(data=> <VideoStatus key={data[0]} number={data[0]} config={data[1]} delay={data[2]}/>)}
     </ul>
   </div>
 );
